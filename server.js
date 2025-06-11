@@ -1,18 +1,27 @@
-// Import required modules
 const express = require('express');
-
-// Initialize the Express app
 const app = express();
+const port = process.env.PORT || 3000;
 
-// Define the port
-const PORT = process.env.PORT || 3000;
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'UP', message: 'Server is healthy' });
+app.get('/*', (req, res) => {
+  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
+  res.redirect(301, redirectUrl);
 });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+app.post('/*', (req, res) => {
+  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
+  res.redirect(301, redirectUrl);
+});
+
+app.put('/*', (req, res) => {
+  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
+  res.redirect(301, redirectUrl);
+});
+
+app.delete('/*', (req, res) => {
+  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
+  res.redirect(301, redirectUrl);
+});
+
+app.listen(port, () => {
+  console.log(`Redirect server listening on port ${port}`);
 });
