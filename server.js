@@ -2,24 +2,28 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.get('/*', (req, res) => {
-  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
-  res.redirect(301, redirectUrl);
-});
+const targetUrl = 'https://deloittettdev.deloitte.gr';
 
-app.post('/*', (req, res) => {
-  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
-  res.redirect(301, redirectUrl);
-});
 
-app.put('/*', (req, res) => {
-  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
-  res.redirect(301, redirectUrl);
-});
+// Proxy all requests to the target URL
+const https = require('https');
 
-app.delete('/*', (req, res) => {
-  const redirectUrl = 'https://deloittettdev.deloitte.gr' + req.originalUrl;
-  res.redirect(301, redirectUrl);
+const axios = require('axios');
+
+app.use('/', async (req, res) => {
+  try {
+    const response = await axios({
+      method: req.method,
+      url: `${targetUrl}${req.url}`,
+      headers: req.headers,
+      data: req.body,
+    });
+
+    res.status(response.status).set(response.headers).send(response.data);
+  } catch (error) {
+    console.error('Error during request:', error.message);
+    res.status(error.response?.status || 500).send(error.response?.data || 'Internal Server Error');
+  }
 });
 
 app.listen(port, () => {
